@@ -6,7 +6,8 @@ export default async function ensureComplete(request) {
   while (result.status !== 200) {
     // 三秒后重试
     tryCount++;
-    if (tryCount > 4) {
+    if (tryCount > 5) {
+      console.log('[Fatal] Failed too many times');
       return null;
     }
     // if (result.data)  console.log(result.data.toString());
