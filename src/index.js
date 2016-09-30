@@ -13,6 +13,8 @@ const headers = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.' + Math.floor(Math.random() * 100),
 };
 
+var count = 0;
+
 async function reqNextNode(orgId, parentSectionNames) {
   const sectionNames = [...parentSectionNames];
   const thisReq = request
@@ -57,7 +59,7 @@ async function reqNextNode(orgId, parentSectionNames) {
       });
       user.sections = sectionNames.slice();
       await user.save();
-      console.log('[Saved] ' + userData.name + userData.phone, sectionNames);
+      console.log('[Saved] ' + (++count)  + userData.name + userData.phone, sectionNames);
     }
   }
 
