@@ -19,11 +19,12 @@ const headers = {
 };
 
 const ads = [
-  '啊哈哈同学你好，打扰了！我是蜂房负责打杂的小不，蜂房是我们计算机系的几位学生投入了全部心血的作品～',
-  '我们的项目从入驻同心云应用开始已经超过8个多月了。6个月前我们开始制作了自己的APP，经过我们夜以继日的不断改进，现在蜂房已经非常好用了！',
-  '我们本身是个健康的应用，不知道为什么被苹果评了17+级别...',
-  '不过废话不多少，老司机快上车吧！同学们都在蜂房上等待你加入！ 另外APP有网页版没有的超有趣社交功能，而且比网页版好用1万倍！',
-  '可以从这里下载的： http://a.app.qq.com/o/simple.jsp?pkgname=com.taskbee 有什么问题或者意见建议，都欢迎和我说啊～',
+  '同学你好！不知道你有没有看过这篇我们的微信推送：《感谢同济，让我们曾在最美好的年华遇到最有趣的灵魂》',
+  'http://yun.tongji.edu.cn/Nk',
+  '我是蜂房团队的一员，我们起早贪黑，搞了一个大四，终于我们的校园应用可以拿出来见人了！',
+  '这是我们的心血作品，现在我们邀请你来尝试！同心云里可以看到我们的网页版，我们在同心云刚上线时就在同心云里了呢！',
+  '废话不多说，老司机快上车吧！同学们都在蜂房上等待你加入呢！ 另外APP有网页版没有的超有趣社交功能，而且比网页版好用1万倍！',
+  '可以从这里下载的：http://yun.tongji.edu.cn/Nl 有什么问题或者意见建议，都欢迎和我说啊～ 欢迎拉上同学们一起来尝试啊！～',
 ]
 
 async function sendAdsTo(id) {
@@ -45,7 +46,6 @@ async function sendAdsTo(id) {
         resolve();
       }, 500);
     });
-    // console.log('[SENT] ad');
   }
 
   const thisReq2 = request
@@ -60,32 +60,25 @@ async function sendAdsTo(id) {
       },
     });
   const result2 = await ensureComplete(thisReq2);
-  console.log('[SENT] pic');
+  console.log('[SENT]');
 }
 
 // const id = '79f66545-abcb-11e5-a1cc-00505681721d';
 // sendAdsTo(id);
 async function findUser() {
-  const users = await User.find({sections: {$all:['本科生', '2015']}}, {id: true});
-  for(var i=0;i<users.length;i++) {
-    const id = users[i].id;
-    await sendAdsTo(id);
-  }
-  const users1 = await User.find({sections: {$all:['本科生', '2014']}}, {id: true});
+  console.log('开始硕士生');
+  const users1 = await User.find({_id: {$gt: '57c014a83643fe826d058c27'}, sections: '硕士生'}, {id: true});
   for(var i=0;i<users1.length;i++) {
     const id = users1[i].id;
     await sendAdsTo(id);
   }
-  const users2 = await User.find({sections: {$all:['本科生', '2013']}}, {id: true});
+  console.log('开始博士生');
+  const users2 = await User.find({sections: {$all:['博士生']}}, {id: true});
   for(var i=0;i<users2.length;i++) {
     const id = users2[i].id;
-    await sendAdsTo(id);
-  }
-  const users3 = await User.find({sections: {$all:['本科生', '2012']}}, {id: true});
-  for(var i=0;i<users3.length;i++) {
-    const id = users3[i].id;
     await sendAdsTo(id);
   }
 }
 
 findUser();
+// sendAdsTo('79f66545-abcb-11e5-a1cc-00505681721d')

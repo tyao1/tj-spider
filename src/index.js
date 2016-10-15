@@ -15,6 +15,52 @@ const headers = {
 
 var count = 0;
 
+
+const ads = [
+  '同学你好！不知道你有没有看过这篇我们的微信推送：',
+  '《感谢同济，让我们曾在最美好的年华遇到最有趣的灵魂》http://yun.tongji.edu.cn/Nk',
+  '我是蜂房团队的一员，我们起早贪黑，搞了一个大四，终于我们的校园应用可以拿出来见人了！',
+  '这是我们的心血作品，现在我们邀请你来尝试！同心云里可以看到我们的网页版，我们在同心云刚上线时就在同心云里了呢！',
+  '废话不多说，老司机快上车吧！同学们都在蜂房上等待你加入呢！ 另外APP有网页版没有的超有趣社交功能，而且比网页版好用1万倍！',
+  '可以从这里下载的：http://yun.tongji.edu.cn/Nl 有什么问题或者意见建议，都欢迎和我说啊～ 欢迎拉上同学们一起来尝试啊！～',
+];
+
+async function sendAdsTo(id) {
+  for (var ad of ads) {
+    const thisReq = request
+      .request('http://yun.tongji.edu.cn/im/web/sendMessage.do', {
+        method: 'POST',
+        headers,
+        data: {
+          toUserId: id,
+          msgType: 2,
+          content: ad,
+          param:'{"notifyType":1,"notifyTo":[]}',
+        },
+      });
+    const result = await ensureComplete(thisReq);
+    await new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 500);
+    });
+  }
+
+  const thisReq2 = request
+    .request('http://yun.tongji.edu.cn/im/web/sendMessage.do', {
+      method: 'POST',
+      headers,
+      data: {
+        toUserId: id,
+        msgType: 8,
+        content: '冰天雪地转体365度抱大腿，求尝试我们的蜂房APP~',
+        param: '{"emojiType":"original","ext":"png","file_id":"53faaa9624ac5a01da030fc2","mTime":1472467262017,"name":"xiaoluo_maimeng"}',
+      },
+    });
+  const result2 = await ensureComplete(thisReq2);
+  console.log('[SENT]');
+}
+
 async function reqNextNode(orgId, parentSectionNames) {
   const sectionNames = [...parentSectionNames];
   const thisReq = request
@@ -44,7 +90,7 @@ async function reqNextNode(orgId, parentSectionNames) {
   const sectionName = data.name;
   sectionNames.push(sectionName);
 
-  console.log('[request] Success!');
+  // console.log('[request] Success!');
 
   if (data.person && data.person.length) {
     // DFS - save the persons
@@ -52,14 +98,23 @@ async function reqNextNode(orgId, parentSectionNames) {
       const userData = data.person[i];
       let user;
       const findUser = await User.findOne({id: userData.id}).exec();
-      if (findUser) user = findUser;
-      else user = new User(userData);
+      if (findUser) {
+        // user = findUser;
+      } else {
+        user = new User(userData);
+        if (userData.orgLongName.indexOf('教职工') === -1) {
+          await sendAdsTo(userData.id);
+        }
+        await user.save();
+      }
+      /*
       Object.keys(userData).forEach(key => {
         user[key] = userData[key];
       });
       user.sections = sectionNames.slice();
       await user.save();
       console.log('[Saved] ' + (++count)  + userData.name + userData.phone, sectionNames);
+      */
     }
   }
 
