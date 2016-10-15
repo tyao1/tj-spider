@@ -107,7 +107,7 @@ async function reqNextNode(page) {
   let data = JSON.parse(result.data.toString());
   if (data.data && data.data.guessLikeUserBOs) {
     for (const user of data.data.guessLikeUserBOs) {
-      if (/* user.genderInt === 0*/ true) { // 0 - 女生 1 - 男生
+      if (user.genderInt === 0) { // 0 - 女生 1 - 男生
         await addFriend(user.studentIdInt);
       } else {
         console.log('性别不符合，跳过');
@@ -125,7 +125,7 @@ async function reqNextNode(page) {
   }
 }
 
-reqNextNode()
+reqNextNode(0);
 
 async function addFriend(id) {
   const thisReq = request
